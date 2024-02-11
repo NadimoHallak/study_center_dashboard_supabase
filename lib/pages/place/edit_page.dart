@@ -56,15 +56,13 @@ class EditPlace extends StatelessWidget {
                   color: blue,
                   onPressed: () async {
                     print('11111');
+                    StudyCenter center = StudyCenter(
+                        name: name.text, study_center_location: location.text);
+                    await Supabase.instance.client
+                        .from('study_center')
+                        .update(center.toMap())
+                        .eq('id', center.id!);
 
-                    await Supabase.instance.client.from('study_center').update(
-                      {
-                        'name': name.text,
-                        'study_center_location': location.text
-                      },
-                    ).eq('id', center.id);
-
-                    print('22222');
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -72,7 +70,7 @@ class EditPlace extends StatelessWidget {
                         ));
                   },
                   child: const Text(
-                    "Add",
+                    "Edit",
                     style: TextStyle(color: Colors.white),
                   )),
               const SizedBox(

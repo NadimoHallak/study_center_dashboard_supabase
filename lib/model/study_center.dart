@@ -2,16 +2,14 @@
 import 'dart:convert';
 
 class StudyCenter {
-  num id;
+  num? id;
   String name;
   String study_center_location;
   StudyCenter({
-    required this.id,
+    this.id,
     required this.name,
     required this.study_center_location,
   });
-  
-
 
   StudyCenter copyWith({
     num? id,
@@ -21,16 +19,22 @@ class StudyCenter {
     return StudyCenter(
       id: id ?? this.id,
       name: name ?? this.name,
-      study_center_location: study_center_location ?? this.study_center_location,
+      study_center_location:
+          study_center_location ?? this.study_center_location,
     );
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'name': name,
-      'study_center_location': study_center_location,
-    };
+    return id == null
+        ? <String, dynamic>{
+            'name': name,
+            'study_center_location': study_center_location,
+          }
+        : <String, dynamic>{
+            'id': id,
+            'name': name,
+            'study_center_location': study_center_location,
+          };
   }
 
   factory StudyCenter.fromMap(Map<String, dynamic> map) {
@@ -43,21 +47,23 @@ class StudyCenter {
 
   String toJson() => json.encode(toMap());
 
-  factory StudyCenter.fromJson(String source) => StudyCenter.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory StudyCenter.fromJson(String source) =>
+      StudyCenter.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'StudyCenter(id: $id, name: $name, study_center_location: $study_center_location)';
+  String toString() =>
+      'StudyCenter(id: $id, name: $name, study_center_location: $study_center_location)';
 
   @override
   bool operator ==(covariant StudyCenter other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.name == name &&
-      other.study_center_location == study_center_location;
+
+    return other.id == id &&
+        other.name == name &&
+        other.study_center_location == study_center_location;
   }
 
   @override
-  int get hashCode => id.hashCode ^ name.hashCode ^ study_center_location.hashCode;
+  int get hashCode =>
+      id.hashCode ^ name.hashCode ^ study_center_location.hashCode;
 }

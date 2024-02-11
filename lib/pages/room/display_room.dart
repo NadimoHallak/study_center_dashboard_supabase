@@ -1,39 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:study_center_dashboard/main.dart';
-import 'package:study_center_dashboard/model/study_center_list.dart';
-import 'package:study_center_dashboard/pages/place/add_places.dart';
-import 'package:study_center_dashboard/pages/place/edit_page.dart';
-import 'package:study_center_dashboard/pages/room/display_room.dart';
+import 'package:study_center_dashboard/model/room_list_model.dart';
+import 'package:study_center_dashboard/model/room_model.dart';
+import 'package:study_center_dashboard/model/study_center.dart';
+import 'package:study_center_dashboard/pages/room/add_room.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class MyHomePage extends StatelessWidget {
-  MyHomePage({super.key});
-
-  int selectedIndex = 0;
-  var studyRoomPlace =
-      Supabase.instance.client.from('study_center').stream(primaryKey: ['id']);
+class DisplayRooms extends StatelessWidget {
+  DisplayRooms({super.key, this.id});
+  num? id;
   @override
   Widget build(BuildContext context) {
+    var studyRoom = Supabase.instance.client
+        .from('study_room')
+        .stream(primaryKey: ['id']).eq('study_center_id', '$id');
     return Scaffold(
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(top: 20, left: 20),
           child: StreamBuilder(
-            stream: studyRoomPlace,
+            stream: studyRoom,
             builder: (BuildContext context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(
                   child: CircularProgressIndicator(),
                 );
               }
-              StudyCenterList places = StudyCenterList.fromMap(snapshot.data!);
+              RoomList room = RoomList.fromMap(snapshot.data!);
               return DataTable(
                 border: TableBorder.lerp(
                     const TableBorder(), const TableBorder(), 2),
                 columns: [
                   DataColumn(
                     label: Text(
-                      "Name",
+                      "Discreption",
                       style: TextStyle(
                           color: blue,
                           fontWeight: FontWeight.bold,
@@ -42,7 +43,7 @@ class MyHomePage extends StatelessWidget {
                   ),
                   DataColumn(
                     label: Text(
-                      "Location",
+                      "Table Count",
                       style: TextStyle(
                           color: blue,
                           fontWeight: FontWeight.bold,
@@ -70,32 +71,25 @@ class MyHomePage extends StatelessWidget {
                 ],
                 rows: [
                   ...List.generate(
-                    places.studyCenters.length,
+                    room.rooms.length,
                     (index) => DataRow(
-                      onLongPress: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DisplayRooms(
-                                id: places.studyCenters[index].id,
-                              ),
-                            ));
-                      },
+                      onLongPress: () {},
                       cells: [
                         DataCell(
-                          Text(places.studyCenters[index].name),
+                          Text(room.rooms[index].discreption),
                         ),
                         DataCell(
                           Text(
-                              places.studyCenters[index].study_center_location),
+                            room.rooms[index].tables_count.toString(),
+                          ),
                         ),
                         DataCell(
                           IconButton(
                             onPressed: () async {
                               await Supabase.instance.client
-                                  .from('study_center')
+                                  .from('study_room')
                                   .delete()
-                                  .eq('id', places.studyCenters[index].id!);
+                                  .eq('id', room.rooms[index].id!);
                             },
                             icon: Icon(
                               Icons.delete,
@@ -106,13 +100,13 @@ class MyHomePage extends StatelessWidget {
                         DataCell(
                           IconButton(
                             onPressed: () {
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => EditPlace(
-                                      center: places.studyCenters[index],
-                                    ),
-                                  ));
+                              // Navigator.pushReplacement(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => EditPlace(
+                              //         center: places.studyCenters[index],
+                              //       ),
+                              //     ));
                             },
                             icon: Icon(
                               Icons.edit,
@@ -128,7 +122,8 @@ class MyHomePage extends StatelessWidget {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AddPlaces(),
+                            builder: (context) =>
+                                AddRoom(id: room.rooms[0].study_center_id),
                           ));
                     },
                     cells: const [

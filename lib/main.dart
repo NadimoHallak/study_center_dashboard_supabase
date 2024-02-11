@@ -18,8 +18,7 @@ void main() async {
 Color blue = const Color.fromARGB(255, 21, 63, 117);
 Color red = const Color.fromARGB(255, 245, 30, 30);
 
-var studyRoomPlace =
-    Supabase.instance.client.from('study_center').stream(primaryKey: ['id']);
+
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});

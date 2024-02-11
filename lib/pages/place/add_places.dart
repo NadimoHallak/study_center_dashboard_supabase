@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:study_center_dashboard/main.dart';
+import 'package:study_center_dashboard/model/study_center.dart';
 import 'package:study_center_dashboard/pages/home_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -49,13 +52,13 @@ class AddPlaces extends StatelessWidget {
               MaterialButton(
                 color: blue,
                 onPressed: () async {
-                  print('11111');
                   added = true;
-                  await Supabase.instance.client.from('study_center').insert(
-                    {'name': name.text, 'study_center_location': location.text},
-                  );
+                  StudyCenter center = StudyCenter(
+                      name: name.text, study_center_location: location.text);
+                  await Supabase.instance.client
+                      .from('study_center')
+                      .insert(center.toMap());
 
-                  print('22222');
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
