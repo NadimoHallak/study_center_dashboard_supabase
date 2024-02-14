@@ -5,32 +5,26 @@ import 'package:study_center_dashboard/main.dart';
 import 'package:study_center_dashboard/model/room_model.dart';
 import 'package:study_center_dashboard/model/study_center.dart';
 import 'package:study_center_dashboard/pages/home_page.dart';
+import 'package:study_center_dashboard/pages/room/add_room.dart';
 import 'package:study_center_dashboard/pages/room/display_room.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-List<String> types = [
-  'calm',
-  'noise',
-  'silent',
-  'garden',
-  'smoker',
-];
-
-class AddRoom extends StatelessWidget {
-  AddRoom({super.key, required this.id});
+class EditRoom extends StatelessWidget {
+  EditRoom({super.key, required this.room});
   TextEditingController tableCount = TextEditingController();
+  Room room;
 
-  final num? id;
-  String dropdownValue = types.first;
   @override
   Widget build(BuildContext context) {
+    String dropdownValue = room.discreption;
+    tableCount.text = room.tables_count.toString();
     return Scaffold(
         body: Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Add Room',
+            'Edit Room',
             style: TextStyle(
                 fontSize: 40, color: blue, fontWeight: FontWeight.bold),
           ),
@@ -39,7 +33,7 @@ class AddRoom extends StatelessWidget {
           ),
           StatefulBuilder(builder: (context, setState) {
             return DropdownMenu(
-              initialSelection: types.first,
+              initialSelection: room.discreption,
               onSelected: (value) {
                 setState(() {
                   dropdownValue = value!;
@@ -73,26 +67,27 @@ class AddRoom extends StatelessWidget {
               MaterialButton(
                   color: blue,
                   onPressed: () async {
-                    Room room = Room(
+                    Room roomCopy = Room(
                       discreption: dropdownValue,
                       tables_count: num.parse(tableCount.text),
                       is_compleate: false,
-                      study_center_id: id,
+                      study_center_id: room.study_center_id,
                     );
                     await Supabase.instance.client
                         .from('study_room')
-                        .insert(room.toMap());
+                        .update(roomCopy.toMap())
+                        .eq('id', room.id.toString());
 
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => DisplayRooms(
-                            id: id,
+                            id: room.study_center_id,
                           ),
                         ));
                   },
                   child: const Text(
-                    "Add",
+                    "Edit",
                     style: TextStyle(color: Colors.white),
                   )),
               const SizedBox(
@@ -105,7 +100,7 @@ class AddRoom extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => DisplayRooms(
-                          id: id,
+                          id: room.study_center_id,
                         ),
                       ));
                 },

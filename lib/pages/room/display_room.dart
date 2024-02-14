@@ -3,7 +3,9 @@ import 'package:study_center_dashboard/main.dart';
 import 'package:study_center_dashboard/model/room_list_model.dart';
 import 'package:study_center_dashboard/model/room_model.dart';
 import 'package:study_center_dashboard/model/study_center.dart';
+import 'package:study_center_dashboard/pages/place/edit_page.dart';
 import 'package:study_center_dashboard/pages/room/add_room.dart';
+import 'package:study_center_dashboard/pages/room/edit_room.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DisplayRooms extends StatelessWidget {
@@ -100,13 +102,11 @@ class DisplayRooms extends StatelessWidget {
                         DataCell(
                           IconButton(
                             onPressed: () {
-                              // Navigator.pushReplacement(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //       builder: (context) => EditPlace(
-                              //         center: places.studyCenters[index],
-                              //       ),
-                              //     ));
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditRoom(room: room.rooms[index])
+                                  ));
                             },
                             icon: Icon(
                               Icons.edit,
@@ -122,8 +122,7 @@ class DisplayRooms extends StatelessWidget {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                AddRoom(id: room.rooms[0].study_center_id),
+                            builder: (context) => AddRoom(id: id),
                           ));
                     },
                     cells: const [

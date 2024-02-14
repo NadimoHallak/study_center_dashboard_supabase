@@ -6,13 +6,13 @@ class Room {
   String discreption;
   num tables_count;
   bool is_compleate;
-  num study_center_id;
+  num? study_center_id;
   Room({
     this.id,
     required this.discreption,
     required this.tables_count,
     required this.is_compleate,
-    required this.study_center_id,
+     this.study_center_id,
   });
 
   Room copyWith({
